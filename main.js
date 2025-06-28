@@ -1,4 +1,6 @@
-# Saving the updated main.js content to provide to the user
+from pathlib import Path
+
+# Retrying file save after timeout
 updated_main_js = """
 function generateContent() {
   const url = document.getElementById('youtube-url').value;
@@ -11,12 +13,12 @@ function generateContent() {
 
   results.innerHTML = `<p>⏳ Processing: ${url}</p>`;
 
-  fetch('https://cpdphai0.rpcld.net/webhook/church-seo-submission', {
+  fetch('/api/transcribe', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ youtubeUrl: url })
+    body: JSON.stringify({ videoUrl: url })
   })
     .then(response => {
       if (!response.ok) throw new Error('Network response was not ok');
@@ -61,7 +63,6 @@ function copyToClipboard() {
 }
 """
 
-from pathlib import Path
 output_path = Path("/mnt/data/main.js")
 output_path.write_text(updated_main_js)
 output_path.name

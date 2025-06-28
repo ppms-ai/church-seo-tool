@@ -1,0 +1,19 @@
+body {
+  font-family: sans-serif;
+  padding: 2rem;
+  background: #fdfbf6;
+  color: #333;
+}
+input {
+  padding: 0.5rem;
+  width: 300px;
+  margin-right: 0.5rem;
+}
+button {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+#results {
+  margin-top: 2rem;
+  font-weight: bold;
+}

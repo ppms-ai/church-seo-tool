@@ -7,7 +7,24 @@ function generateContent() {
     return;
   }
 
-  results.innerHTML = `<p>Processing: ${url}</p><p>(This is where your AI-generated content will go!)</p>`;
+  results.innerHTML = `<p>Processing: ${url}</p>`;
 
-  // ✨ We'll plug in the webhook fetch code here next
+  // Replace this with your real webhook URL
+  const webhookURL = 'https://cpdphai0.rpcld.net/webhook/church-seo-submission';
+
+  fetch(webhookURL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ youtube_url: url })
+  })
+  .then(response => response.json())
+  .then(data => {
+    results.innerHTML += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+  })
+  .catch(error => {
+    console.error(error);
+    results.innerHTML += `<p style="color:red;">Error sending data: ${error}</p>`;
+  });
 }

@@ -1,3 +1,5 @@
+# Saving the updated main.js content to provide to the user
+updated_main_js = """
 function generateContent() {
   const url = document.getElementById('youtube-url').value;
   const results = document.getElementById('results');
@@ -7,7 +9,7 @@ function generateContent() {
     return;
   }
 
-  results.innerHTML = `<p>Processing: ${url}</p>`;
+  results.innerHTML = `<p>⏳ Processing: ${url}</p>`;
 
   fetch('https://cpdphai0.rpcld.net/webhook/church-seo-submission', {
     method: 'POST',
@@ -21,27 +23,34 @@ function generateContent() {
       return response.json();
     })
     .then(data => {
-  const content = data.message.content;
+      const content = data.result || data.message?.content || '⚠️ No content returned.';
+      const preview = marked.parse(content); // Convert markdown to HTML
 
-  const preview = marked.parse(content); // Requires marked.js
-  const results = document.getElementById("results");
-  const toggle = document.getElementById("toggle-section");
-
-  // Set both versions
-  results.setAttribute("data-markdown", content);
-  results.setAttribute("data-html", preview);
-  results.innerHTML = preview;
-
-  toggle.style.display = "block";
-})
+      results.setAttribute("data-markdown", content);
+      results.setAttribute("data-html", preview);
+      results.innerHTML = `
+        <div id="toggle-section" style="margin-top: 1rem;">
+          <p>✅ Here is your sermon content:</p>
+          <div id="contentDisplay">${preview}</div>
+          <div style="margin-top: 10px;">
+            <button onclick="toggleView()">🔄 Toggle Markdown/Preview</button>
+            <button onclick="copyToClipboard()">📋 Copy to Clipboard</button>
+          </div>
+        </div>
+      `;
+    })
     .catch(error => {
       results.innerHTML = `<p style="color:red;">❌ Error sending data: ${error.message}</p>`;
     });
 }
+
 function toggleView() {
   const results = document.getElementById("results");
-  const isHTML = results.innerHTML === results.getAttribute("data-html");
-  results.innerHTML = isHTML ? `<pre>${results.getAttribute("data-markdown")}</pre>` : results.getAttribute("data-html");
+  const contentDiv = document.getElementById("contentDisplay");
+  const isHTML = contentDiv.innerHTML === results.getAttribute("data-html");
+  contentDiv.innerHTML = isHTML
+    ? `<pre>${results.getAttribute("data-markdown")}</pre>`
+    : results.getAttribute("data-html");
 }
 
 function copyToClipboard() {
@@ -50,3 +59,9 @@ function copyToClipboard() {
     alert("Copied to clipboard!");
   });
 }
+"""
+
+from pathlib import Path
+output_path = Path("/mnt/data/main.js")
+output_path.write_text(updated_main_js)
+output_path.name

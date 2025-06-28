@@ -21,9 +21,32 @@ function generateContent() {
       return response.json();
     })
     .then(data => {
-      results.innerHTML = `<p>✅ Success! Here's what came back:</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
-    })
+  const content = data.message.content;
+
+  const preview = marked.parse(content); // Requires marked.js
+  const results = document.getElementById("results");
+  const toggle = document.getElementById("toggle-section");
+
+  // Set both versions
+  results.setAttribute("data-markdown", content);
+  results.setAttribute("data-html", preview);
+  results.innerHTML = preview;
+
+  toggle.style.display = "block";
+})
     .catch(error => {
       results.innerHTML = `<p style="color:red;">❌ Error sending data: ${error.message}</p>`;
     });
+}
+function toggleView() {
+  const results = document.getElementById("results");
+  const isHTML = results.innerHTML === results.getAttribute("data-html");
+  results.innerHTML = isHTML ? `<pre>${results.getAttribute("data-markdown")}</pre>` : results.getAttribute("data-html");
+}
+
+function copyToClipboard() {
+  const text = document.getElementById("results").getAttribute("data-markdown");
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Copied to clipboard!");
+  });
 }

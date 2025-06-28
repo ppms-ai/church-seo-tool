@@ -1,22 +1,68 @@
+# Creating an updated index.html file that matches the new main.js functionality
+updated_index_html = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Church SEO Tool</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Church SEO Content Generator</title>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f5f5f5;
+      margin: 2rem;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #333;
+    }
+    input, button {
+      padding: 0.6rem;
+      font-size: 1rem;
+      margin-right: 1rem;
+    }
+    #results {
+      margin-top: 2rem;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    pre {
+      background: #f0f0f0;
+      padding: 1rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to the Church SEO Tool</h1>
-  <p>Paste your YouTube sermon link below:</p>
-  <input type="text" id="youtube-url" placeholder="https://www.youtube.com/..." />
-  <button onclick="generateContent()">Generate</button>
+
+  <h1>Church SEO Content Generator</h1>
+
+  <input type="text" id="youtube-url" placeholder="Paste YouTube sermon URL here" size="50">
+  <button onclick="generateContent()">Generate Content</button>
+
   <div id="results"></div>
-  <div id="toggle-section" style="display: none; margin-top: 1rem;">
-  <button onclick="toggleView()">🔄 Toggle Markdown/Preview</button>
-  <button onclick="copyToClipboard()">📋 Copy to Clipboard</button>
-</div>
+
   <script src="main.js"></script>
+
 </body>
 </html>
+"""
+
+from pathlib import Path
+output_path_html = Path("/mnt/data/index.html")
+output_path_html.write_text(updated_index_html)
+output_path_html.name

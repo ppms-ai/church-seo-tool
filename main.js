@@ -1,7 +1,3 @@
-from pathlib import Path
-
-# Retrying file save after timeout
-updated_main_js = """
 function generateContent() {
   const url = document.getElementById('youtube-url').value;
   const results = document.getElementById('results');
@@ -13,12 +9,12 @@ function generateContent() {
 
   results.innerHTML = `<p>⏳ Processing: ${url}</p>`;
 
-  fetch('/api/transcribe', {
+  fetch('https://cpdphai0.rpcld.net/webhook/church-seo-submission', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ videoUrl: url })
+    body: JSON.stringify({ youtubeUrl: url })
   })
     .then(response => {
       if (!response.ok) throw new Error('Network response was not ok');
@@ -61,8 +57,3 @@ function copyToClipboard() {
     alert("Copied to clipboard!");
   });
 }
-"""
-
-output_path = Path("/mnt/data/main.js")
-output_path.write_text(updated_main_js)
-output_path.name

@@ -8,9 +8,16 @@ import { AdminPortal } from './pages/Admin/AdminPortal';
 import { env } from './lib/env';
 
 function Protected({ children }: { children: React.ReactElement }) {
-  const { user, loading } = useAuth();
+  const { user, loading, fetchError } = useAuth();
   if (loading) {
-    return <div className="p-8">Loading...</div>;
+    return <div className="p-8">Fetching church user...</div>;
+  }
+  if (fetchError) {
+    return (
+      <div className="p-8 text-red-600">
+        Error loading church account: {fetchError}
+      </div>
+    );
   }
   return user ? children : <Navigate to="/login" replace />;
 }

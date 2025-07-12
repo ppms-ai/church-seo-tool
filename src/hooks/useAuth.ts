@@ -6,6 +6,7 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [churchUser, setChurchUser] = useState<ChurchUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     // If Supabase is not configured, stop loading immediately
@@ -70,10 +71,17 @@ export function useAuth() {
   }, []);
 
   const fetchChurchUser = async (userId: string) => {
+    if (!isSupabaseConfigured) {
+      console.warn('[useAuth] Supabase not configured');
+      setFetchError('Supabase configuration missing');
+      setLoading(false);
+      return;
+    }
+
     try {
-      console.log('Fetching church user for:', userId);
-      
-      const { data, error } = await supabase
+      setFetchError(null);
+      console.log('[useAuth] fetching church user for', userId);
+      const query = supabase
         .from('church_users')
         .select(`
           *,
@@ -82,15 +90,25 @@ export function useAuth() {
         .eq('user_id', userId)
         .single();
 
+      console.log('[useAuth] executing query', query);
+      const { data, error } = await query;
+
       if (error) {
-        console.error('Church user fetch error:', error);
+        console.error('[useAuth] church user fetch error', error);
+        setFetchError(error.message);
+        setChurchUser(null);
+      } else if (!data) {
+        console.warn('[useAuth] church user query returned no data');
+        setFetchError('No church record found for this account');
         setChurchUser(null);
       } else {
-        console.log('Church user data:', data);
+        console.log('[useAuth] church user data', data);
+        setFetchError(null);
         setChurchUser(data);
       }
-    } catch (error) {
-      console.error('Error fetching church user:', error);
+    } catch (error: any) {
+      console.error('[useAuth] unexpected error fetching church user', error);
+      setFetchError(error.message || 'Unexpected error');
       setChurchUser(null);
     } finally {
       setLoading(false);
@@ -139,6 +157,7 @@ export function useAuth() {
       const { error } = await supabase.auth.signOut();
       setUser(null);
       setChurchUser(null);
+      setFetchError(null);
       return { error };
     } catch (error) {
       return { error };
@@ -149,6 +168,7 @@ export function useAuth() {
     user,
     churchUser,
     loading,
+    fetchError,
     signIn,
     signUp,
     signOut,

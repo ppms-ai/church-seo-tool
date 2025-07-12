@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { env } from './lib/env';
 
 function App() {
   const [activeTab, setActiveTab] = useState('sermons');
@@ -17,6 +18,8 @@ function App() {
     notionEmbedUrl: 'https://www.notion.so/embed/your-church-content-hub-url'
   };
 
+  const n8nWebhookUrl = env.n8nWebhookUrl;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -25,8 +28,10 @@ function App() {
       return;
     }
 
-    // Your actual n8n webhook URL
-    const n8nWebhookUrl = 'https://79jn2mpy.rpcl.app/webhook-test/church-seo-intake';
+    if (!n8nWebhookUrl) {
+      alert('Webhook URL is not configured');
+      return;
+    }
     
     const sermonData = {
       churchId: currentChurch.id,

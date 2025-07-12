@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase, Sermon } from '../lib/supabase';
+import { supabase, Sermon, isSupabaseConfigured } from '../lib/supabase';
 import { useAuth } from './useAuth';
 
 export function useSermons() {
@@ -14,7 +14,7 @@ export function useSermons() {
   }, [churchUser]);
 
   const fetchSermons = async () => {
-    if (!churchUser?.church_id) return;
+    if (!isSupabaseConfigured || !churchUser?.church_id) return;
 
     try {
       setLoading(true);
@@ -43,6 +43,9 @@ export function useSermons() {
     youtube_url: string;
     series_name?: string;
   }) => {
+    if (!isSupabaseConfigured) {
+      throw new Error('Supabase not configured');
+    }
     if (!churchUser?.church_id) throw new Error('No church selected');
 
     const { data, error } = await supabase
@@ -69,6 +72,10 @@ export function useSermons() {
   };
 
   const updateSermon = async (id: string, updates: Partial<Sermon>) => {
+    if (!isSupabaseConfigured) {
+      throw new Error('Supabase not configured');
+    }
+
     const { error } = await supabase
       .from('sermons')
       .update(updates)
@@ -79,6 +86,10 @@ export function useSermons() {
   };
 
   const deleteSermon = async (id: string) => {
+    if (!isSupabaseConfigured) {
+      throw new Error('Supabase not configured');
+    }
+
     const { error } = await supabase
       .from('sermons')
       .delete()

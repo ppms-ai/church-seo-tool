@@ -98,6 +98,10 @@ export function useAuth() {
   };
 
   const signIn = async (email: string, password: string) => {
+    if (!isSupabaseConfigured) {
+      return { error: new Error('Supabase not configured') };
+    }
+
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -110,12 +114,16 @@ export function useAuth() {
   };
 
   const signUp = async (email: string, password: string) => {
+    if (!isSupabaseConfigured) {
+      return { error: new Error('Supabase not configured') };
+    }
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
       });
-      
+
       return { error };
     } catch (error) {
       return { error };
@@ -123,6 +131,10 @@ export function useAuth() {
   };
 
   const signOut = async () => {
+    if (!isSupabaseConfigured) {
+      return { error: new Error('Supabase not configured') };
+    }
+
     try {
       const { error } = await supabase.auth.signOut();
       setUser(null);

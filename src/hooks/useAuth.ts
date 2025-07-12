@@ -10,17 +10,18 @@ const fetchChurchUser = async (userId: string) => {
     setFetchError(null);
     console.log('[useAuth] fetching church user for', userId);
     
-    // First, try to get just the church_users record
     const { data, error } = await supabase
       .from('church_users')
-      .select('*')
+      .select(`
+        *,
+        church:churches(*)
+      `)
       .eq('user_id', userId)
       .single();
 
     console.log('[useAuth] church user query result:', { data, error });
 
     if (error) {
-      // If the error is "PGRST116" it means no rows found
       if (error.code === 'PGRST116') {
         console.warn('[useAuth] No church user record found for user:', userId);
         setFetchError('No church record found for this account');

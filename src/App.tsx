@@ -9,9 +9,13 @@ import { env } from './lib/env';
 
 function Protected({ children }: { children: React.ReactElement }) {
   const { user, loading, fetchError } = useAuth();
+  
+  // Only show loading if we're actually loading authentication
   if (loading) {
-    return <div className="p-8">Fetching church user...</div>;
+    return <div className="p-8">Loading...</div>;
   }
+  
+  // Show error if there's a fetch error
   if (fetchError) {
     return (
       <div className="p-8 text-red-600">
@@ -19,6 +23,10 @@ function Protected({ children }: { children: React.ReactElement }) {
       </div>
     );
   }
+  
+  // Only require user to be authenticated, not churchUser
+  return user ? children : <Navigate to="/login" replace />;
+}
   return user ? children : <Navigate to="/login" replace />;
 }
 

@@ -9,6 +9,8 @@ const fetchChurchUser = async (userId: string) => {
   try {
     setFetchError(null);
     console.log('[useAuth] fetching church user for', userId);
+    setLoading(false); // TEMPORARY - just to stop the spinning
+return; // TEMPORARY - just to stop the spinning
     
     // First, try to get just the church_users record
     const { data, error } = await supabase
